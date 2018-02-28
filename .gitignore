@@ -1,1 +1,5 @@
 .idea/
+
+vendor/
+glide.lock
+golang-microservice
