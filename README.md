@@ -59,3 +59,5 @@ docker build -t golang-microservice -f ./Dockerfile .
 ```sh
 docker run --name golang-microservice -p 8080:8000 golang-microservice
 ```
+
+$(dirname $(dirname $(dirname $(dirname "$(pwd)"))))
