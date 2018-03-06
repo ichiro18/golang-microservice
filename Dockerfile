@@ -1,10 +1,10 @@
 FROM scratch
-LABEL NAME="golang-microservice"
+LABEL NAME="go-microservice"
 
 ENV SERVICE_PORT 8000
 
 EXPOSE $SERVICE_PORT
 
-COPY golang-microservice /
+COPY go-microservice /
 
-CMD ["/golang-microservice"]
+CMD ["/go-microservice"]
