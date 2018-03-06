@@ -3,61 +3,81 @@
 ## Настройка окружения
 
 1. Установка [gvm](https://github.com/moovweb/gvm)
+
     ```sh
-    $ bash < <(curl -s -S -L https://raw.githubusercontent.com/moovweb/gvm/master/binscripts/gvm-installer)
-    $ vim ~/.zshenv
-    [[ -s ~/.gvm/scripts/gvm ]] && . ~/.gvm/scripts/gvm
+    bash < <(curl -s -S -L https://raw.githubusercontent.com/moovweb/gvm/master/binscripts/gvm-installer)
     ```
 2. Установка [direnv](https://github.com/direnv/direnv)
+
     ```sh
-    $ sudo add-apt-repository "deb http://cz.archive.ubuntu.com/ubuntu xenial main universe"
-    $ sudo apt-get update
-    $ apt-get install direnv
-    $ vim ~/.zshenv
-    [[ -f /usr/local/bin/direnv ]] && \
-      eval “$(direnv hook zsh)”
-    $ vim ~/.direnvrc
-    use_go(){
-        . $GVM_ROOT/scripts/gvm-default
-        gvm use $1
-    }
-    $ vim ~/.zshrc
-    source ~/.zshenv
+    sudo add-apt-repository "deb http://cz.archive.ubuntu.com/ubuntu xenial main universe"
+    sudo apt-get update
+    apt-get install direnv
     ```
-3. Устанавливаем GO
+3. Настраиваем дотфайлы `~/.zshenv`,
+   ```sh
+   $ cat ~/.direnvrc                                                 17:16:35
+   use_go(){
+    . $GVM_ROOT/scripts/gvm-default
+    gvm use $1
+   }
+
+   $ cat ~/.zshenv                                                   17:16:26
+   [[ -s ~/.gvm/scripts/gvm ]] && . ~/.gvm/scripts/gvm
+   [[ -f /usr/local/bin/direnv ]] && \
+     eval “$(direnv hook $SHELL)”
+
+   $ cat ~/.zshrc.local
+   ...
+   function creategoproject {
+     TRAPINT() {
+       print "Caught SIGINT, aborting."
+       return $(( 128 + $1 ))
+     }
+     echo 'Creating new Go project:'
+     if [ -n "$1" ]; then
+       project=$1
+     else
+       while [[ -z "$project" ]]; do
+         vared -p 'what is your project name: ' -c project;
+       done
+     fi
+     namespace='github.com/ichiro18'
+     while true; do
+       vared -p 'what is your project namespace: ' -c namespace
+       if [ -n "$namespace" ] ; then
+          break
+       fi
+     done
+     mkdir -p $project/src/$namespace/$project
+     git init -q $project/src/$namespace/$project
+     main=$project/src/$namespace/$project/main.go
+     gvm pkgset create --local
+     gvm pkgset use --local
+     echo 'export GOPATH=$(PWD):$GOPATH' >> $project/.envrc
+     echo 'export PATH=$(PWD)/bin:$PATH' >> $project/.envrc
+     echo 'package main' >> $main
+     echo 'import "fmt"' >> $main
+     echo 'func main() {' >> $main
+     echo '    fmt.Println("hello world")' >> $main
+     echo '}' >> $main
+     direnv allow $project
+     echo "cd $project/src/$namespace/$project #to start coding"
+   }
+   export DIRENV_BASH=/bin/bash
+   eval "$(direnv hook $SHELL)"
+   ...
+   $ source ~/.zshrc
+   ```
+
+4. Устанавливаем GO нужной версии (флаг -В установить только бинарники)
+
     ```sh
-    gvm install go1.10 -B
+    gvm install go1.9.2 -B
     ```
+
 4. Создаем проект
     ```sh
-    $ mkdir awesome-project
-    $ cd awesome-project
-    $ gvm pkgset create --local
-    $ gvm pkgset use --local
-    $ mkdir -p ./src/$VCS_HOST/$VCS_USERNAME/$PROJECT_NAME
-    $ direnv edit .
-    use go go1.10
-    layout go
-    $ eval “$(direnv hook zsh)”
+    creategoproject $PROJECT_NAME
     ```
-5. Открываем $PROJECT_NAME в любимом редакторе
-
-### Собираем проект
-
-```sh
-GOOS=linux CGO_ENABLED=0 go build
-```
-
-### Собираем образ Docker
-
-```sh
-docker build -t golang-microservice -f ./Dockerfile .
-```
-
-### Запускаем контейнер
-
-```sh
-docker run --name golang-microservice -p 8080:8000 golang-microservice
-```
-
-$(dirname $(dirname $(dirname $(dirname "$(pwd)"))))
+5. Открываем ` $PROJECT_NAME/src/../../$PROJECT_NAME` в любимом редакторе
