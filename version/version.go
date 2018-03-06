@@ -1,11 +1,11 @@
 package version
 
 var (
-	// BuildTime показывает время сборки
-	BuildTime = "unset"
-	// Release указывает версию релиза
-	Release = "unset"
-	// Commit указывает на хэш коммита
-	Commit = "unset"
+	// RELEASE returns the release version
+	RELEASE = "UNKNOWN"
+	// REPO returns the git repository URL
+	REPO = "UNKNOWN"
+	// COMMIT returns the short sha from git
+	COMMIT = "UNKNOWN"
 )
 

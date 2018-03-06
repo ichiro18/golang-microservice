@@ -1,15 +1,14 @@
 APP?=go-microservice
 NAMESPACE?=github.com/ichiro18
 PROJECT?=${NAMESPACE}/${APP}
-RELEASE?=$(shell git describe --tags)
+RELEASE?=0.0.1
 COMMIT?=$(shell git rev-parse --short HEAD)
-BUILD_TIME?=$(shell date -u '+%Y-%m-%d_%H:%M:%S')
+REPO?=$(shell git config --get remote.origin.url)
 PORT?=8080
 VERSION_FLAGS?=-ldflags "\
-	-X ${PROJECT}/version.Release=${RELEASE} \
-	-X ${PROJECT}/version.Commit=${COMMIT} \
-	-X ${PROJECT}/version.BuildUser=${COMMIT} \
-	-X ${PROJECT}/version.BuildTime=${BUILD_TIME}"
+	-X ${PROJECT}/version.RELEASE=${RELEASE} \
+	-X ${PROJECT}/version.COMMIT=${COMMIT} \
+	-X ${PROJECT}/version.REPO=${REPO}"
 
 clean:
 	if [ -f ${APP} ] ; then rm ${APP} ; fi
