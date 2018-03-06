@@ -3,4 +3,4 @@
 
 vendor/
 glide.lock
-golang-microservice
+go-microservice

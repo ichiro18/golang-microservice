@@ -8,7 +8,8 @@ import (
 	"github.com/takama/router"
 	"github.com/ichiro18/go-microservice/version"
 
-	common_handlers "github.com/ichiro18/go-microservice/common/handlers"
+	info_handler "github.com/ichiro18/go-microservice/common/handlers/info"
+	"github.com/ichiro18/go-microservice/common/utils/shutdown"
 )
 
 var log = logrus.New()
@@ -29,11 +30,21 @@ func main() {
 
 	// Liveness and Readiness probes for Kubernetes
 	r.GET("/info", func(c *router.Control) {
-		common_handlers.Info(c, version.RELEASE, version.REPO, version.COMMIT)
+		info_handler.Info(c, version.RELEASE, version.REPO, version.COMMIT)
 	})
 	r.GET("/status", func(c *router.Control) {
 		c.Code(http.StatusOK).Body(http.StatusText(http.StatusOK))
 	})
 
-	r.Listen("0.0.0.0:" + port)
+	go r.Listen("0.0.0.0:" + port)
+
+	logger := log.WithField("event", "shutdown")
+	sdHandler := shutdown.NewHandler(logger)
+	sdHandler.RegisterShotdown(sd)
+}
+
+// sd does graceful dhutdown of the service
+func sd() (string, error) {
+	// if service has to finish some tasks before shutting down, these tasks must be finished her
+	return "Ok", nil
 }
