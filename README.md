@@ -14,15 +14,15 @@
     sudo apt-get update
     apt-get install direnv
     ```
-3. Настраиваем дотфайлы `~/.zshenv`,
+3. Настраиваем дотфайлы `~/.direnvrc`,`~/.zshenv`,`~/.zshrc.local`
    ```sh
-   $ cat ~/.direnvrc                                                 17:16:35
+   $ cat ~/.direnvrc
    use_go(){
     . $GVM_ROOT/scripts/gvm-default
     gvm use $1
    }
 
-   $ cat ~/.zshenv                                                   17:16:26
+   $ cat ~/.zshenv
    [[ -s ~/.gvm/scripts/gvm ]] && . ~/.gvm/scripts/gvm
    [[ -f /usr/local/bin/direnv ]] && \
      eval “$(direnv hook $SHELL)”
