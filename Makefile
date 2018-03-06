@@ -22,9 +22,12 @@ PORT?=8000
 
 
 # ==========================================	Сценарии		==========================================
-
+# Устанавливаем нужные зависимости
+vendor:
+	go get -u github.com/golang/dep/cmd/dep
+	dep ensure
 # Удаляем старое
-clean:
+clean: vendor
 	docker stop ${APP}:${RELEASE} || true && docker image rm ${APP}:${RELEASE} || true
 	if [ -f ${APP} ] ; then rm ${APP} ; fi
 

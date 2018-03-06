@@ -1,6 +1,6 @@
 # Микросервис на GO
 
-## Настройка окружения
+### Настройка окружения
 
 1. Установка [gvm](https://github.com/moovweb/gvm)
 
@@ -81,3 +81,20 @@
     creategoproject $PROJECT_NAME
     ```
 5. Открываем ` $PROJECT_NAME/src/../../$PROJECT_NAME` в любимом редакторе
+
+### Запуск
+Для запуска проекта нужно запустить в терминале команду
+
+```sh
+make run
+```
+
+Открыть в браузере
+- [http://localhost:8000/](http://localhost:8000)
+- [http://localhost:8000/info](http://localhost:8000/info) - readiness hellcheck
+- [http://localhost:8000/status](http://localhost:8000/status)  - liveness hellcheck
+### TODO
+- [x] Работа с менеджером зависимостей
+- [x] Контейнеризация 1 демона микросервиса
+- [ ] Контейнеризация нескольких демонов микросервиса
+- [ ] Автоматизация установки скриптом
