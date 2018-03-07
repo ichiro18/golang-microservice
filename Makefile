@@ -13,9 +13,10 @@ VERSION_FLAGS?=-ldflags "\
 	-X ${PROJECT}/version.COMMIT=${COMMIT} \
 	-X ${PROJECT}/version.REPO=${REPO}"
 
-# Параметры кросс-компиляции
+# Параметры компиляции
 GOOS?=linux
 GOARCH?=amd64
+CONTAINER_IMAGE?=docker.io/ilyamachetto/${APP}
 
 # Параметры микросервиса
 PORT?=8000
@@ -37,12 +38,26 @@ build: clean
 
 # Контейнеризация
 container: build
-	docker build -t ${APP}:${RELEASE} .
+	docker build -t ${CONTAINER_IMAGE}:${RELEASE} .
 
 # Запуск
 run: container
 	docker stop $(APP):$(RELEASE) || true && docker rm $(APP):$(RELEASE) || true
 	docker run --name ${APP} -p ${PORT}:${PORT} --rm -e "PORT=${PORT}" ${APP}:${RELEASE}
+
+push: container
+	docker push ${CONTAINER_IMAGE}:${RELEASE}
+
+minikube: push
+	for t in $(shell find ./provision/kubernetes -type f -name "*.yaml"); do \
+		cat $$t | \
+			sed s/'{{ .ServiceName }}'/${APP}/ | \
+			sed s/'{{ .Release }}'/${RELEASE}/; \
+		echo '\n'; \
+	done > tmp.yaml
+	kubectl apply -f tmp.yaml
+	echo "\n $(shell minikube ip) ${APP}.local" | sudo tee -a /etc/hosts
+
 
 install:
 	go install ${VERSION_FLAGS}

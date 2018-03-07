@@ -82,19 +82,26 @@
     ```
 5. Открываем ` $PROJECT_NAME/src/../../$PROJECT_NAME` в любимом редакторе
 
+6. Устанавливаем [minikube](https://github.com/kubernetes/minikube) и запускаем
+    ```sh
+    minikube start
+    minikube addons enable ingress
+    kubectl config use-context minikube
+    ```
 ### Запуск
 Для запуска проекта нужно запустить в терминале команду
 
 ```sh
-make run
+make minikube
 ```
 
 Открыть в браузере
-- [http://localhost:8000/](http://localhost:8000)
-- [http://localhost:8000/info](http://localhost:8000/info) - readiness hellcheck
-- [http://localhost:8000/status](http://localhost:8000/status)  - liveness hellcheck
+- [http://$PROJECT_NAME.local/](http://localhost:8000)
+- [http://$PROJECT_NAME.local/info](http://localhost:8000/info) - readiness hellcheck
+- [http://$PROJECT_NAME.local/status](http://localhost:8000/status)  - liveness hellcheck
 ### TODO
 - [x] Работа с менеджером зависимостей
 - [x] Контейнеризация 1 демона микросервиса
+- [x] Настройка kubernetes
 - [ ] Контейнеризация нескольких демонов микросервиса
 - [ ] Автоматизация установки скриптом
