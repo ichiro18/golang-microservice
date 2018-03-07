@@ -6,7 +6,7 @@ import (
 )
 
 func home(c *router.Control) {
-	fmt.Fprintf(c.Writer, "Processing URL %s...", c.Request.URL.Path)
+	fmt.Fprintf(c.Writer, "Backend URL %s...", c.Request.URL.Path)
 }
 
 func logger(c *router.Control) {

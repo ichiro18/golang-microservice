@@ -20,7 +20,7 @@ func main() {
 		log.Fatal("Requirement parameter SERVICE_PORT is not set")
 	}
 	log.Printf(
-		"Starting the service...\ncommit: %s, repo: %s, version: %s",
+		"Starting the backend service...\ncommit: %s, repo: %s, version: %s",
 		version.COMMIT, version.REPO, version.RELEASE,
 	)
 	r := router.New()

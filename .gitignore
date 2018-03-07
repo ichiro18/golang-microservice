@@ -4,5 +4,7 @@
 vendor/
 glide.lock
 go-microservice
+backend/backend_go-microservice
+frontend/frontend_go-microservice
 
 tmp.yaml
